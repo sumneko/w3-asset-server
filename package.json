@@ -8,7 +8,7 @@
     "contributes": {
         "configuration": {
             "properties": {
-                "W3.path": {
+                "W3.project.path": {
                     "default": "C:\\SSSEditor",
                     "markdownDescription": "项目路径",
                     "scope": "resource",
@@ -17,7 +17,13 @@
             },
             "title": "W3",
             "type": "object"
-        }
+        },
+        "languages": [
+            {
+              "id": "asset",
+              "extensions": [".asset"]
+            }
+          ]
     },
     "description": "Internal use only",
     "displayName": "W3-asset",
@@ -28,5 +34,5 @@
     "main": "./client/out/extension",
     "name": "w3-asset",
     "publisher": "sumneko",
-    "version": "1.1.3"
+    "version": "0.0.1"
 }
