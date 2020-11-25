@@ -10,6 +10,7 @@ local client    = require 'provider.client'
 local furi      = require 'file-uri'
 local pub       = require 'pub'
 local fs        = require 'bee.filesystem'
+local csharp    = require 'csharp'
 
 local function updateConfig()
     local configs = proto.awaitRequest('workspace/configuration', {
@@ -33,6 +34,8 @@ local function updateConfig()
     }
 
     config.setConfig(updated, other)
+
+    csharp.init()
 end
 
 proto.on('initialize', function (params)

@@ -1,4 +1,6 @@
-local files = require 'files'
+local files  = require 'files'
+local csharp = require 'csharp'
+local furi   = require 'file-uri'
 
 local function findSource(text, offset)
     for start, word, finish in string.gmatch(text, '()"([^\r\n]-)"()', math.max(1, offset - 1000)) do
@@ -51,10 +53,30 @@ local function getLabelAsString(source)
     end
 end
 
+local function getLabelAsWord(source)
+    local labels = csharp.getLabel(source.text)
+    if not labels then
+        return nil
+    end
+    local lines = {}
+    for _, label in ipairs(labels) do
+        lines[#lines+1] = ('%s （来自[%s](%s)）'):format(
+            label.description,
+            furi.decode(label.uri):match '[^/\\]+$',
+            label.uri
+        )
+    end
+    table.sort(lines)
+    return table.concat(lines, '\n')
+end
+
 local function getLabel(source)
     if source.type == 'string' then
         -- 字符串
         return getLabelAsString(source)
+    end
+    if source.type == 'word' then
+        return getLabelAsWord(source)
     end
 end
 
