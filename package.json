@@ -34,5 +34,7 @@
     "main": "./client/out/extension",
     "name": "w3-asset",
     "publisher": "sumneko",
+    "repository": {
+    },
     "version": "0.0.1"
 }
