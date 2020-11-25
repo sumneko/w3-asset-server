@@ -1,0 +1,32 @@
+{
+    "activationEvents": [
+        "onLanguage:asset"
+    ],
+    "author": "sumneko",
+    "categories": [
+    ],
+    "contributes": {
+        "configuration": {
+            "properties": {
+                "W3.path": {
+                    "default": "C:\\SSSEditor",
+                    "markdownDescription": "项目路径",
+                    "scope": "resource",
+                    "type": "string"
+                }
+            },
+            "title": "W3",
+            "type": "object"
+        }
+    },
+    "description": "Internal use only",
+    "displayName": "W3-asset",
+    "engines": {
+        "vscode": "^1.23.0"
+    },
+    "license": "MIT",
+    "main": "./client/out/extension",
+    "name": "w3-asset",
+    "publisher": "sumneko",
+    "version": "1.1.3"
+}
