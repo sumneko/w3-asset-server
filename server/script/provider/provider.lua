@@ -74,20 +74,48 @@ proto.on('workspace/didChangeConfiguration', function ()
 end)
 
 proto.on('textDocument/didOpen', function (params)
-    local doc   = params.textDocument
-    local uri   = doc.uri
-    local text  = doc.text
-    files.open(uri)
-    files.setText(uri, text)
 end)
 
 proto.on('textDocument/didClose', function (params)
-    local doc   = params.textDocument
-    local uri   = doc.uri
-    files.close(uri)
-    files.remove(uri)
+end)
+
+proto.on('textDocument/didChange', function (params)
+    local doc    = params.textDocument
+    local change = params.contentChanges
+    local uri    = doc.uri
+    local text   = change[1].text
+    files.setText(uri, text)
+    log.debug('didChange', uri)
 end)
 
 proto.on('textDocument/hover', function (params)
-    log.debug(util.dump(params))
+    await.close 'hover'
+    await.setID 'hover'
+    local core = require 'core.hover'
+    local doc    = params.textDocument
+    local uri    = doc.uri
+    if not files.exists(uri) then
+        local text = util.loadFile(furi.decode(uri))
+        if not text then
+            return
+        end
+        files.setText(uri, text)
+    end
+    local lines  = files.getLines(uri)
+    local text   = files.getText(uri)
+    local offset = define.offsetOfWord(lines, text, params.position)
+    local hover = core.byUri(uri, offset)
+    if not hover then
+        return nil
+    end
+    local md = markdown()
+    md:add('md', hover.label)
+    md:add('md', hover.description)
+    return {
+        contents = {
+            value = md:string(),
+            kind  = 'markdown',
+        },
+        range = define.range(lines, text, hover.source.start, hover.source.finish),
+    }
 end)

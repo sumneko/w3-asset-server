@@ -10,5 +10,14 @@
             "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
             "outFiles": ["${workspaceRoot}/client/out/**/*.js"],
         },
+		{
+			"name": "附加",
+			"type": "lua",
+			"request": "attach",
+			"stopOnEntry": true,
+			"address": "127.0.0.1:11488",
+			"outputCapture": [
+			]
+		},
     ]
 }
