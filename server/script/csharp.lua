@@ -15,6 +15,10 @@ local function loadLabel(text, filePath)
         if des then
             currentDes = des
         end
+        local des = line:match '%[Title%(%"(.-)%"'
+        if des then
+            currentDes = des
+        end
         local key = line:match 'public%s+.-%s+([%w_]+)%s*[=;]'
         if key and currentDes then
             if not m.labels[key] then
