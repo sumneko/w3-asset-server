@@ -11,7 +11,7 @@ local m = {}
 local function loadLabel(text, filePath)
     local currentDes
     for line in util.eachLine(text) do
-        local des = line:match '%[LabelText%(%"(.-)%"%)%]'
+        local des = line:match '%[LabelText%(%"(.-)%"%)'
         if des then
             currentDes = des
         end

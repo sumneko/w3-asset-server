@@ -60,14 +60,14 @@ local function getLabelAsWord(source)
     end
     local lines = {}
     for _, label in ipairs(labels) do
-        lines[#lines+1] = ('%s （来自[%s](%s)）'):format(
+        lines[#lines+1] = ('%s [%s](%s)'):format(
             label.description,
             furi.decode(label.uri):match '[^/\\]+$',
             label.uri
         )
     end
     table.sort(lines)
-    return table.concat(lines, '\n')
+    return table.concat(lines, '\n\n')
 end
 
 local function getLabel(source)
