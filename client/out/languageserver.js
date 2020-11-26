@@ -7,21 +7,6 @@ const vscode_1 = require("vscode");
 const node_1 = require("vscode-languageclient/node");
 let defaultClient;
 let clients = new Map();
-function registerCustomCommands(context) {
-    context.subscriptions.push(vscode_1.commands.registerCommand('lua.config', (data) => {
-        let config = vscode_1.workspace.getConfiguration(undefined, vscode_1.Uri.parse(data.uri));
-        if (data.action == 'add') {
-            let value = config.get(data.key);
-            value.push(data.value);
-            config.update(data.key, value);
-            return;
-        }
-        if (data.action == 'set') {
-            config.update(data.key, data.value);
-            return;
-        }
-    }));
-}
 let _sortedWorkspaceFolders;
 function sortedWorkspaceFolders() {
     if (_sortedWorkspaceFolders === void 0) {
@@ -83,7 +68,6 @@ function start(context, documentSelector, folder) {
     return client;
 }
 function activate(context) {
-    registerCustomCommands(context);
     function didOpenTextDocument(document) {
         // We are only interested in language mode text
         if (document.languageId !== 'asset' || (document.uri.scheme !== 'file' && document.uri.scheme !== 'untitled')) {

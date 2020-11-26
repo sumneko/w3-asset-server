@@ -20,22 +20,6 @@ import {
 let defaultClient: LanguageClient;
 let clients: Map<string, LanguageClient> = new Map();
 
-function registerCustomCommands(context: ExtensionContext) {
-    context.subscriptions.push(Commands.registerCommand('lua.config', (data) => {
-        let config = Workspace.getConfiguration(undefined, Uri.parse(data.uri));
-        if (data.action == 'add') {
-            let value: any[] = config.get(data.key);
-            value.push(data.value);
-            config.update(data.key, value);
-            return;
-        }
-        if (data.action == 'set') {
-            config.update(data.key, data.value);
-            return;
-        }
-    }))
-}
-
 let _sortedWorkspaceFolders: string[] | undefined;
 function sortedWorkspaceFolders(): string[] {
     if (_sortedWorkspaceFolders === void 0) {
@@ -122,7 +106,6 @@ function start(context: ExtensionContext, documentSelector: DocumentSelector, fo
 }
 
 export function activate(context: ExtensionContext) {
-    registerCustomCommands(context);
     function didOpenTextDocument(document: TextDocument): void {
         // We are only interested in language mode text
         if (document.languageId !== 'asset' || (document.uri.scheme !== 'file' && document.uri.scheme !== 'untitled')) {
