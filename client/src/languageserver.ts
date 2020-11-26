@@ -108,44 +108,20 @@ function start(context: ExtensionContext, documentSelector: DocumentSelector, fo
 export function activate(context: ExtensionContext) {
     function didOpenTextDocument(document: TextDocument): void {
         // We are only interested in language mode text
-        if (document.languageId !== 'asset' || (document.uri.scheme !== 'file' && document.uri.scheme !== 'untitled')) {
+        if (document.languageId !== 'asset') {
             return;
         }
 
-        let uri = document.uri;
-        let folder = Workspace.getWorkspaceFolder(uri);
-        // Untitled files go to a default client.
         if (!defaultClient) {
             defaultClient = start(context, [
-                { scheme: 'file', language: 'asset' }
+                { language: 'asset' }
             ], null);
             return;
         }
     }
 
-    function didCloseTextDocument(document: TextDocument): void {
-        let uri = document.uri;
-        if (clients.has(uri.toString())) {
-            let client = clients.get(uri.toString());
-            if (client) {
-                clients.delete(uri.toString());
-                client.stop();
-            }
-        }
-    }
-
     Workspace.onDidOpenTextDocument(didOpenTextDocument);
-    //Workspace.onDidCloseTextDocument(didCloseTextDocument);
     Workspace.textDocuments.forEach(didOpenTextDocument);
-    Workspace.onDidChangeWorkspaceFolders((event) => {
-        for (let folder of event.removed) {
-            let client = clients.get(folder.uri.toString());
-            if (client) {
-                clients.delete(folder.uri.toString());
-                client.stop();
-            }
-        }
-    });
 }
 
 export function deactivate(): Thenable<void> | undefined {

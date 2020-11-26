@@ -77,9 +77,18 @@ proto.on('workspace/didChangeConfiguration', function ()
 end)
 
 proto.on('textDocument/didOpen', function (params)
+    local doc   = params.textDocument
+    local uri   = doc.uri
+    local text  = doc.text
+    files.open(uri)
+    files.setText(uri, text)
 end)
 
 proto.on('textDocument/didClose', function (params)
+    local doc   = params.textDocument
+    local uri   = doc.uri
+    files.close(uri)
+    files.remove(uri)
 end)
 
 proto.on('textDocument/didChange', function (params)
@@ -87,8 +96,9 @@ proto.on('textDocument/didChange', function (params)
     local change = params.contentChanges
     local uri    = doc.uri
     local text   = change[1].text
-    files.setText(uri, text)
-    log.debug('didChange', uri)
+    if files.isOpen(uri) then
+        files.setText(uri, text)
+    end
 end)
 
 proto.on('textDocument/hover', function (params)
@@ -98,11 +108,7 @@ proto.on('textDocument/hover', function (params)
     local doc    = params.textDocument
     local uri    = doc.uri
     if not files.exists(uri) then
-        local text = util.loadFile(furi.decode(uri))
-        if not text then
-            return
-        end
-        files.setText(uri, text)
+        return
     end
     local lines  = files.getLines(uri)
     local text   = files.getText(uri)
