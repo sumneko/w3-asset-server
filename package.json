@@ -1,6 +1,7 @@
 {
     "activationEvents": [
-        "onLanguage:asset"
+        "onLanguage:asset",
+        "onStartupFinished"
     ],
     "author": "sumneko",
     "categories": [
