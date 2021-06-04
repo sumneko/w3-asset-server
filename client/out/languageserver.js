@@ -77,23 +77,53 @@ function start(context, documentSelector, folder) {
     return client;
 }
 function showAssetID() {
+    let badgeMap = new Map();
     vscode_1.window.registerFileDecorationProvider({
         provideFileDecoration: (uri) => __awaiter(this, void 0, void 0, function* () {
+            badgeMap.set(uri.toString(), true);
             if (!uri.path.toLowerCase().endsWith('.asset')) {
+                badgeMap.set(uri.toString(), false);
                 return;
             }
             let text = (yield vscode_1.workspace.fs.readFile(uri)).toString();
             let results = text.match(/ID:\s*(".*")/);
             if (!results) {
+                badgeMap.set(uri.toString(), false);
                 return;
             }
-            let id = eval(results[1]);
+            let id = '《' + eval(results[1]) + '》';
             let fd = new vscode_1.FileDecoration();
-            fd.badge = id.substr(id.length - 2, 2);
-            fd.tooltip = '《' + id + '》';
+            fd.badge = id.substr(0, 2);
+            fd.tooltip = id;
+            badgeMap.set(uri.toString(), id);
             return fd;
         })
     });
+    function sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+    for (let index = 1; index < 10; index++) {
+        vscode_1.window.registerFileDecorationProvider({
+            provideFileDecoration: (uri) => __awaiter(this, void 0, void 0, function* () {
+                while (true) {
+                    let badge = badgeMap.get(uri.toString());
+                    if (badge === false) {
+                        return;
+                    }
+                    if (typeof (badge) == 'string') {
+                        let piece = badge.substr(index * 2, 2);
+                        if (piece === '') {
+                            return;
+                        }
+                        let fd = new vscode_1.FileDecoration();
+                        fd.badge = piece;
+                        return fd;
+                    }
+                    yield sleep(0.1);
+                }
+            })
+        });
+    }
 }
 function activate(context) {
     function didOpenTextDocument(document) {
