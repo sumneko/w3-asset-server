@@ -135,7 +135,7 @@ function showAssetID() {
         return new Promise((resolve) => setTimeout(resolve, time));
     }
 
-    for (let index = 1; index < 10; index++) {
+    for (let index = 1; index < 20; index++) {
         window.registerFileDecorationProvider({
             provideFileDecoration: async (uri: Uri): Promise<FileDecoration> => {
                 while (true) {

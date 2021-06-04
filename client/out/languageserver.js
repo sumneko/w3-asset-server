@@ -102,7 +102,7 @@ function showAssetID() {
     function sleep(time) {
         return new Promise((resolve) => setTimeout(resolve, time));
     }
-    for (let index = 1; index < 10; index++) {
+    for (let index = 1; index < 20; index++) {
         vscode_1.window.registerFileDecorationProvider({
             provideFileDecoration: (uri) => __awaiter(this, void 0, void 0, function* () {
                 while (true) {
