@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as os from 'os';
-import * as fs from 'fs';
 import {
     workspace as Workspace,
     ExtensionContext,
@@ -9,6 +8,9 @@ import {
     TextDocument,
     WorkspaceFolder,
     Uri,
+    FileDecoration,
+    window,
+    workspace,
 } from 'vscode';
 import {
     LanguageClient,
@@ -105,6 +107,26 @@ function start(context: ExtensionContext, documentSelector: DocumentSelector, fo
     return client;
 }
 
+function showAssetID() {
+    window.registerFileDecorationProvider({
+        provideFileDecoration: async (uri: Uri): Promise<FileDecoration> => {
+            if (!uri.path.toLowerCase().endsWith('.asset')) {
+                return;
+            }
+            let text = (await workspace.fs.readFile(uri)).toString();
+            let results = text.match(/ID:\s*(".*")/);
+            if (!results) {
+                return;
+            }
+            let id: string = eval(results[1]);
+            let fd = new FileDecoration();
+            fd.badge   = id.substr(id.length - 2, 2);
+            fd.tooltip = '《' + id + '》';
+            return fd
+        }
+    })
+}
+
 export function activate(context: ExtensionContext) {
     function didOpenTextDocument(document: TextDocument): void {
         // We are only interested in language mode text
@@ -122,6 +144,8 @@ export function activate(context: ExtensionContext) {
 
     Workspace.onDidOpenTextDocument(didOpenTextDocument);
     Workspace.textDocuments.forEach(didOpenTextDocument);
+
+    showAssetID()
 }
 
 export function deactivate(): Thenable<void> | undefined {
