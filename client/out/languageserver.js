@@ -86,7 +86,10 @@ function showAssetID() {
                 return;
             }
             let text = (yield vscode_1.workspace.fs.readFile(uri)).toString();
-            let results = text.match(/ID:\s*(".*")/);
+            let results = text.match(/OwnerId:\s*(".*")/);
+            if (!results) {
+                results = text.match(/ID:\s*(".*")/);
+            }
             if (!results) {
                 badgeMap.set(uri.toString(), false);
                 return;
