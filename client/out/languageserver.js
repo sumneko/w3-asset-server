@@ -76,57 +76,43 @@ function start(context, documentSelector, folder) {
     client.start();
     return client;
 }
+// @ts-ignore
+vscode_1.FileDecoration.validate = () => {
+    return true;
+};
 function showAssetID() {
     let badgeMap = new Map();
     vscode_1.window.registerFileDecorationProvider({
         provideFileDecoration: (uri) => __awaiter(this, void 0, void 0, function* () {
-            badgeMap.set(uri.toString(), true);
-            if (!uri.path.toLowerCase().endsWith('.asset')) {
-                badgeMap.set(uri.toString(), false);
+            let id = badgeMap.get(uri.toString());
+            if (typeof id == 'boolean') {
                 return;
             }
-            let text = (yield vscode_1.workspace.fs.readFile(uri)).toString();
-            let results = text.match(/OwnerId:\s*(".*")/);
-            if (!results) {
-                results = text.match(/ID:\s*(".*")/);
+            if (typeof id != 'string') {
+                badgeMap.set(uri.toString(), true);
+                if (!uri.path.toLowerCase().endsWith('.asset')) {
+                    badgeMap.set(uri.toString(), false);
+                    return;
+                }
+                let text = (yield vscode_1.workspace.fs.readFile(uri)).toString();
+                let results = text.match(/OwnerId:\s*(".*")/);
+                if (!results) {
+                    results = text.match(/ID:\s*(".*")/);
+                }
+                if (!results) {
+                    badgeMap.set(uri.toString(), false);
+                    return;
+                }
+                id = eval(results[1]);
             }
-            if (!results) {
-                badgeMap.set(uri.toString(), false);
-                return;
+            if (typeof id == 'string') {
+                let fd = new vscode_1.FileDecoration();
+                fd.badge = id;
+                badgeMap.set(uri.toString(), id);
+                return fd;
             }
-            let id = '《' + eval(results[1]) + '》';
-            let fd = new vscode_1.FileDecoration();
-            fd.badge = id.substr(0, 2);
-            fd.tooltip = id;
-            badgeMap.set(uri.toString(), id);
-            return fd;
         })
     });
-    function sleep(time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-    }
-    for (let index = 1; index < 20; index++) {
-        vscode_1.window.registerFileDecorationProvider({
-            provideFileDecoration: (uri) => __awaiter(this, void 0, void 0, function* () {
-                while (true) {
-                    let badge = badgeMap.get(uri.toString());
-                    if (badge === false) {
-                        return;
-                    }
-                    if (typeof (badge) == 'string') {
-                        let piece = badge.substr(index * 2, 2);
-                        if (piece === '') {
-                            return;
-                        }
-                        let fd = new vscode_1.FileDecoration();
-                        fd.badge = piece;
-                        return fd;
-                    }
-                    yield sleep(0.1);
-                }
-            })
-        });
-    }
 }
 function activate(context) {
     function didOpenTextDocument(document) {

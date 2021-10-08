@@ -107,59 +107,44 @@ function start(context: ExtensionContext, documentSelector: DocumentSelector, fo
     return client;
 }
 
+// @ts-ignore
+FileDecoration.validate = () => {
+    return true;
+}
+
 function showAssetID() {
     let badgeMap = new Map<string, string|boolean>();
     window.registerFileDecorationProvider({
         provideFileDecoration: async (uri: Uri): Promise<FileDecoration> => {
-            badgeMap.set(uri.toString(), true);
-            if (!uri.path.toLowerCase().endsWith('.asset')) {
-                badgeMap.set(uri.toString(), false);
+            let id = badgeMap.get(uri.toString());
+            if (typeof id == 'boolean') {
                 return;
             }
-            let text = (await workspace.fs.readFile(uri)).toString();
-            let results = text.match(/OwnerId:\s*(".*")/);
-            if (!results) {
-                results = text.match(/ID:\s*(".*")/);
+            if (typeof id != 'string') {
+                badgeMap.set(uri.toString(), true);
+                if (!uri.path.toLowerCase().endsWith('.asset')) {
+                    badgeMap.set(uri.toString(), false);
+                    return;
+                }
+                let text = (await workspace.fs.readFile(uri)).toString();
+                let results = text.match(/OwnerId:\s*(".*")/);
+                if (!results) {
+                    results = text.match(/ID:\s*(".*")/);
+                }
+                if (!results) {
+                    badgeMap.set(uri.toString(), false);
+                    return;
+                }
+                id = eval(results[1]);
             }
-            if (!results) {
-                badgeMap.set(uri.toString(), false);
-                return;
+            if (typeof id == 'string') {
+                let fd = new FileDecoration();
+                fd.badge   = id;
+                badgeMap.set(uri.toString(), id);
+                return fd
             }
-            let id: string = '《' + eval(results[1]) + '》';
-            let fd = new FileDecoration();
-            fd.badge   = id.substr(0, 2);
-            fd.tooltip = id;
-            badgeMap.set(uri.toString(), id);
-            return fd
         }
     })
-
-    function sleep (time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-    }
-
-    for (let index = 1; index < 20; index++) {
-        window.registerFileDecorationProvider({
-            provideFileDecoration: async (uri: Uri): Promise<FileDecoration> => {
-                while (true) {
-                    let badge = badgeMap.get(uri.toString());
-                    if (badge === false) {
-                        return;
-                    }
-                    if (typeof (badge) == 'string') {
-                        let piece = badge.substr(index * 2, 2);
-                        if (piece === '') {
-                            return;
-                        }
-                        let fd = new FileDecoration();
-                        fd.badge = piece;
-                        return fd
-                    }
-                    await sleep(0.1);
-                }
-            }
-        })
-    }
 }
 
 export function activate(context: ExtensionContext) {
