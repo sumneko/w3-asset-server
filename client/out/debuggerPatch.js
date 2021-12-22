@@ -23,7 +23,7 @@ function applyPatch(context) {
         yield fs.promises.copyFile(myPath + "/patch/remotedebug.dll", debugPath + "/runtime/win32-x64/lua51/remotedebug.dll");
         yield fs.promises.copyFile(myPath + "/patch/worker.lua", debugPath + "/script/backend/worker.lua");
         yield fs.promises.copyFile(myPath + "/patch/query_process.lua", debugPath + "/script/frontend/query_process.lua");
-        yield fs.promises.copyFile(myPath + "/patch/trackerFactory.js", debugPath + "/js/query_process.lua");
+        yield fs.promises.copyFile(myPath + "/patch/trackerFactory.js", debugPath + "/js/trackerFactory.js");
     });
 }
 exports.applyPatch = applyPatch;
