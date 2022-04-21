@@ -22,52 +22,17 @@ import {
 let defaultClient: LanguageClient;
 let clients: Map<string, LanguageClient> = new Map();
 
-let _sortedWorkspaceFolders: string[] | undefined;
-function sortedWorkspaceFolders(): string[] {
-    if (_sortedWorkspaceFolders === void 0) {
-        _sortedWorkspaceFolders = Workspace.workspaceFolders ? Workspace.workspaceFolders.map(folder => {
-            let result = folder.uri.toString();
-            if (result.charAt(result.length - 1) !== '/') {
-                result = result + '/';
-            }
-            return result;
-        }).sort(
-            (a, b) => {
-                return a.length - b.length;
-            }
-        ) : [];
-    }
-    return _sortedWorkspaceFolders;
-}
-Workspace.onDidChangeWorkspaceFolders(() => _sortedWorkspaceFolders = undefined);
-
-function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
-    let sorted = sortedWorkspaceFolders();
-    for (let element of sorted) {
-        let uri = folder.uri.toString();
-        if (uri.charAt(uri.length - 1) !== '/') {
-            uri = uri + '/';
-        }
-        if (uri.startsWith(element)) {
-            return Workspace.getWorkspaceFolder(Uri.parse(element))!;
-        }
-    }
-    return folder;
-}
-
-function start(context: ExtensionContext, documentSelector: DocumentSelector, folder: WorkspaceFolder): LanguageClient {
+function start(context: ExtensionContext, documentSelector: DocumentSelector): LanguageClient {
     // Options to control the language client
     let clientOptions: LanguageClientOptions = {
         // Register the server for plain text documents
         documentSelector: documentSelector,
-        workspaceFolder: folder,
         progressOnInitialization: true,
         markdown: {
             isTrusted: true,
         },
     };
 
-    let config = Workspace.getConfiguration(undefined, folder);
     let command: string;
     let platform: string = os.platform();
     switch (platform) {
@@ -101,7 +66,7 @@ function start(context: ExtensionContext, documentSelector: DocumentSelector, fo
         clientOptions
     );
 
-    client.registerProposedFeatures();
+    //client.registerProposedFeatures();
     client.start();
 
     return client;
@@ -157,7 +122,7 @@ export function activate(context: ExtensionContext) {
         if (!defaultClient) {
             defaultClient = start(context, [
                 { language: 'asset' }
-            ], null);
+            ]);
             return;
         }
     }

@@ -128,3 +128,43 @@ proto.on('textDocument/hover', function (params)
         range = define.range(lines, text, hover.source.start, hover.source.finish),
     }
 end)
+
+proto.on('textDocument/inlayHint', function (params)
+    await.close 'hover'
+    await.setID 'hover'
+    local core = require 'core.inlayHint'
+    local doc    = params.textDocument
+    local uri    = doc.uri
+    if not files.exists(uri) then
+        return
+    end
+    local lines = files.getLines(uri)
+    local text  = files.getText(uri)
+    local start, finish = define.unrange(lines, text, params.range)
+        local results = core(uri, start, finish)
+        local hintResults = {}
+        for i, res in ipairs(results) do
+            hintResults[i] = {
+                label        = {
+                    {
+                        value    = res.text,
+                        tooltip  = res.tooltip,
+                        location = res.source and define.location(
+                                    uri,
+                                    define.range(
+                                        lines,
+                                        text,
+                                        res.source.start,
+                                        res.source.finish
+                                    )
+                                ),
+                    },
+                },
+                position     = define.position(lines, text, res.offset),
+                kind         = res.kind,
+                paddingLeft  = true,
+                paddingRight = true,
+            }
+        end
+        return hintResults
+end)

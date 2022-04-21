@@ -1,41 +1,47 @@
 {
-    "activationEvents": [
-        "onLanguage:asset",
-        "onStartupFinished"
-    ],
-    "author": "sumneko",
-    "categories": [
-    ],
-    "contributes": {
-        "configuration": {
-            "properties": {
-                "W3.project.path": {
-                    "default": "C:\\SSSEditor",
-                    "markdownDescription": "项目路径",
-                    "scope": "resource",
-                    "type": "string"
-                }
-            },
-            "title": "W3",
-            "type": "object"
-        },
-        "languages": [
-            {
-              "id": "asset",
-              "extensions": [".asset"]
-            }
-          ]
-    },
-    "description": "Internal use only",
-    "displayName": "W3-asset",
-    "engines": {
-        "vscode": "^1.23.0"
-    },
-    "license": "MIT",
-    "main": "./client/out/extension",
-    "name": "w3-asset",
-    "publisher": "sumneko",
-    "repository": {
-    },
-    "version": "0.0.13"
+	"activationEvents": [
+		"onLanguage:asset",
+		"onStartupFinished"
+	],
+	"author": "sumneko",
+	"categories": [],
+	"contributes": {
+		"configuration": {
+			"properties": {
+				"W3.project.path": {
+					"default": "C:\\SSSEditor",
+					"markdownDescription": "项目路径",
+					"scope": "resource",
+					"type": "string"
+				}
+			},
+			"title": "W3",
+			"type": "object"
+		},
+		"languages": [
+			{
+				"id": "asset",
+				"extensions": [
+					".asset"
+				]
+			}
+		]
+	},
+	"description": "Internal use only",
+	"displayName": "W3-asset",
+	"engines": {
+		"vscode": "^1.23.0"
+	},
+	"license": "MIT",
+	"main": "./client/out/extension",
+	"name": "w3-asset",
+	"publisher": "sumneko",
+	"repository": {},
+	"version": "0.0.13",
+	"__metadata": {
+		"id": "04799e36-c531-4459-8c96-97af886187ce",
+		"publisherDisplayName": "sumneko",
+		"publisherId": "fb626675-24cf-4881-8c13-b465f29bec2f",
+		"isPreReleaseVersion": false
+	}
 }
