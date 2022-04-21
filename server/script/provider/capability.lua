@@ -15,7 +15,7 @@ function m.getIniter()
         },
 
         hoverProvider = true,
-        inlayHint = true,
+        inlayHintProvider = true,
     }
 
     return initer
