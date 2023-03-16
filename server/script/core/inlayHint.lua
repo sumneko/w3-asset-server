@@ -1,6 +1,8 @@
-local files  = require 'files'
-local csharp = require 'csharp'
-local furi   = require 'file-uri'
+local files   = require 'files'
+local csharp  = require 'csharp'
+local symbols = require 'core.symbols'
+local util    = require 'utility'
+local guide   = require 'parser.guide'
 
 local ESCMap = {
     ['\\r']  = '\r',
@@ -69,6 +71,9 @@ local function getWords(uri, ostart, ofinish)
 end
 
 local function displayText(uri, results, start, finish)
+    if not util.stringEndWith(uri, '.asset') then
+        return
+    end
     local words = getWords(uri, start, finish)
     for _, word in ipairs(words) do
         if word.type == 'string' then
@@ -93,11 +98,32 @@ local function displayText(uri, results, start, finish)
     end
 end
 
+local function displayLineNum(uri, results, start, finish)
+    if not util.stringEndWith(uri, '.lua') then
+        return
+    end
+    local lineMap = symbols.getTriggerLines(uri)
+    if not lineMap then
+        return
+    end
+    local lines = files.getLines(uri)
+    local startLine = guide.positionOf(lines, start)
+    local finishLine = guide.positionOf(lines, finish)
+    for i = startLine, finishLine do
+        results[#results+1] = {
+            text     = lineMap[i + 1] and ('[%03d]'):format(lineMap[i + 1]) or '[???]',
+            position = { line = i, character = 0 },
+            kind     = 0,
+        }
+    end
+end
+
 ---@async
 return function (uri, start, finish)
     local results = {}
 
     displayText(uri, results, start, finish)
+    displayLineNum(uri, results, start, finish)
 
     return results
 end

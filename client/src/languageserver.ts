@@ -115,13 +115,14 @@ function showAssetID() {
 export function activate(context: ExtensionContext) {
     function didOpenTextDocument(document: TextDocument): void {
         // We are only interested in language mode text
-        if (document.languageId !== 'asset') {
+        if (document.languageId !== 'asset' && document.languageId !== 'lua') {
             return;
         }
 
         if (!defaultClient) {
             defaultClient = start(context, [
-                { language: 'asset' }
+                { language: 'asset' },
+                { language: 'lua' },
             ]);
             return;
         }

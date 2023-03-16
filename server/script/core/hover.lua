@@ -1,6 +1,7 @@
 local files  = require 'files'
 local csharp = require 'csharp'
 local furi   = require 'file-uri'
+local util   = require 'utility'
 
 local function findSource(text, offset)
     for start, word, finish in string.gmatch(text, '()"([^\r\n]-)"()', math.max(1, offset - 1000)) do
@@ -81,6 +82,9 @@ local function getLabel(source)
 end
 
 local function hoverbyUri(uri, offset)
+    if not util.stringEndWith(uri, '.asset') then
+        return
+    end
     local text = files.getText(uri)
     if not text then
         return

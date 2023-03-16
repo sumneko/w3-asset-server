@@ -86,12 +86,13 @@ function showAssetID() {
 function activate(context) {
     function didOpenTextDocument(document) {
         // We are only interested in language mode text
-        if (document.languageId !== 'asset') {
+        if (document.languageId !== 'asset' && document.languageId !== 'lua') {
             return;
         }
         if (!defaultClient) {
             defaultClient = start(context, [
-                { language: 'asset' }
+                { language: 'asset' },
+                { language: 'lua' },
             ]);
             return;
         }

@@ -141,30 +141,30 @@ proto.on('textDocument/inlayHint', function (params)
     local lines = files.getLines(uri)
     local text  = files.getText(uri)
     local start, finish = define.unrange(lines, text, params.range)
-        local results = core(uri, start, finish)
-        local hintResults = {}
-        for i, res in ipairs(results) do
-            hintResults[i] = {
-                label        = {
-                    {
-                        value    = res.text,
-                        tooltip  = res.tooltip,
-                        location = res.source and define.location(
-                                    uri,
-                                    define.range(
-                                        lines,
-                                        text,
-                                        res.source.start,
-                                        res.source.finish
-                                    )
-                                ),
-                    },
+    local results = core(uri, start, finish)
+    local hintResults = {}
+    for i, res in ipairs(results) do
+        hintResults[i] = {
+            label        = {
+                {
+                    value    = res.text,
+                    tooltip  = res.tooltip,
+                    location = res.source and define.location(
+                                uri,
+                                define.range(
+                                    lines,
+                                    text,
+                                    res.source.start,
+                                    res.source.finish
+                                )
+                            ),
                 },
-                position     = define.position(lines, text, res.offset),
-                kind         = res.kind,
-                paddingLeft  = true,
-                paddingRight = true,
-            }
-        end
-        return hintResults
+            },
+            position     = res.position or define.position(lines, text, res.offset),
+            kind         = res.kind,
+            paddingLeft  = true,
+            paddingRight = true,
+        }
+    end
+    return hintResults
 end)
