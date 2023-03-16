@@ -2,6 +2,7 @@ local furi  = require 'file-uri'
 local util  = require 'utility'
 local nonil = require 'without-check-nil'
 local files = require 'files'
+local proto = require 'proto'
 
 ---@class SymbolManager
 ---@field _cache table<string, table|false>
@@ -37,7 +38,11 @@ function m.loadSymbols(path)
 end
 
 function m.reset()
+    if not next(m._cache) then
+        return
+    end
     m._cache = {}
+    proto.awaitRequest('workspace/inlayHint/refresh', nil)
 end
 
 ---@param uri string
