@@ -95,8 +95,11 @@ end
 
 local ConfigTemplate = {
     project = {
-        path            = {'', String}
+        path            = {'', String},
     },
+    inlayHint = {
+        triggerLineNum  = {false, Boolean}
+    }
 }
 
 local OtherTemplate = {

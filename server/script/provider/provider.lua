@@ -35,7 +35,8 @@ local function updateConfig()
 
     config.setConfig(updated, other)
 
-    csharp.init()
+    --csharp.init()
+    proto.awaitRequest('workspace/inlayHint/refresh', nil)
 end
 
 proto.on('initialize', function (params)

@@ -13,6 +13,12 @@
 					"markdownDescription": "项目路径",
 					"scope": "resource",
 					"type": "string"
+				},
+				"W3.inlayHint.triggerLineNum": {
+					"default": true,
+					"markdownDescription": "在内联提示中显示触发器行号",
+					"scope": "resource",
+					"type": "boolean"
 				}
 			},
 			"title": "W3",

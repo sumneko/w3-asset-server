@@ -1,6 +1,7 @@
 local furi  = require 'file-uri'
 local util  = require 'utility'
 local nonil = require 'without-check-nil'
+local files = require 'files'
 
 ---@class SymbolManager
 ---@field _cache table<string, table|false>
@@ -74,5 +75,11 @@ function m.getTriggerLines(uri)
 
     return lineMap
 end
+
+files.watch(function (ev, uri)
+    if util.stringEndWith(uri, '.lua') then
+        m.reset()
+    end
+end)
 
 return m

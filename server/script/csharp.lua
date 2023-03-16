@@ -46,7 +46,6 @@ local function loadLabels(path)
 end
 
 function m.init()
-    do return end
     local projectPath = fs.path(config.config.project.path)
     local csharpPath = projectPath / 'client\\UnityProject\\Assets\\Tools\\SSSEditor\\Scripts'
     if not fs.exists(projectPath) then

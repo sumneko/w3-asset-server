@@ -3,6 +3,7 @@ local csharp  = require 'csharp'
 local symbols = require 'core.symbols'
 local util    = require 'utility'
 local guide   = require 'parser.guide'
+local config  = require 'config'
 
 local ESCMap = {
     ['\\r']  = '\r',
@@ -99,6 +100,9 @@ local function displayText(uri, results, start, finish)
 end
 
 local function displayLineNum(uri, results, start, finish)
+    if not config.config.inlayHint.triggerLineNum then
+        return
+    end
     if not util.stringEndWith(uri, '.lua') then
         return
     end
